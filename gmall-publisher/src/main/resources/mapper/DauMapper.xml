@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+        接口式编程，要求
+        namespace: 写绑定的接口的全类名
+
+        mapper标签中可以写很多sql语句，是什么语句就使用什么标签
+
+        查询：  select
+        新增： insert
+        删除： delete
+        更新： update
+-->
+<mapper namespace="com.atguigu.gmallpublisher.dao.DauMapper">
+
+
+    <select id="getDauByDate" resultType="int">
+         select
+            count(*)
+         from GMALL2020_DAU
+         where LOGDATE = #{date}
+    </select>
+
+    <!--
+            如何求今天的新增设备数量
+                如果有一张每日的新增设备表，只需要从这张表查询某一条新增设备的数量即可！
+
+            只有每日活跃设备表。
+                取今日日活  差集  历史日活
+
+                sql中如何实现差集运算
+
+                select
+                    a.id
+                a left join b on a.id=b.id
+                where b.id is null
+
+            <在xml，需要转义，不转义认为是一个标签的开始符号
+    -->
+    <select id="getNewMidNumsByDate" resultType="int">
+            select
+                count(*)
+            from
+            (select  MID from GMALL2020_DAU where LOGDATE = #{date}) t1
+            left join
+            (select
+                MID
+            from GMALL2020_DAU
+            where LOGDATE &lt; #{date}
+            group by MID ) t2
+            on t1.MID=t2.MID
+            where t2.MID is null
+
+
+    </select>
+
+    <!-- 如果返回值是List<aaa>,resultType写的应该是 集合中的泛型aaa-->
+    <select id="getRealTimeHoursData" resultType="com.atguigu.gmallpublisher.beans.DauPerHour">
+         select
+            LOGHOUR  hour,count(*) dauNums
+         from GMALL2020_DAU
+         where LOGDATE = #{date}
+         group by LOGHOUR
+
+
+    </select>
+
+
+</mapper>

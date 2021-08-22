@@ -1,0 +1,6 @@
+# 项目排除路径
+/ESDemo/target/
+/gmall-canalclient/target/
+/gmall-common/target/
+/gmall-mock/target/
+/gmall_realtime/target/

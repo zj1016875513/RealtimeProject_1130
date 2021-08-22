@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+        接口式编程，要求
+        namespace: 写绑定的接口的全类名
+
+        mapper标签中可以写很多sql语句，是什么语句就使用什么标签
+
+        查询：  select
+        新增： insert
+        删除： delete
+        更新： update
+-->
+<mapper namespace="com.atguigu.gmallpublisher.dao.GmvMapper">
+
+
+    <select id="getGmvByDate" resultType="double">
+         select
+            sum(total_amount)
+         from GMALL2020_ORDER_INFO
+         where create_date = #{date}
+    </select>
+
+
+    <!-- 如果返回值是List<aaa>,resultType写的应该是 集合中的泛型aaa-->
+    <select id="getRealTimeHoursData" resultType="com.atguigu.gmallpublisher.beans.GmvPerHour">
+         select
+            create_hour  hour,sum(total_amount) gmv
+         from GMALL2020_ORDER_INFO
+         where create_date = #{date}
+         group by create_hour
+
+    </select>
+
+
+</mapper>
